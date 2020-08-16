@@ -5,3 +5,5 @@
 5) Egg Availability calculation
 6) Comparison between countries 
 7) Total population
+8) Malnutrition
+9) Anaemia(if possible)
