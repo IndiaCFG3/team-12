@@ -1,9 +1,13 @@
-1) Dashboard
-2) Data visualization 
-3) ML Model for Demand
-4) Maps Integration
-5) Egg Availability calculation
-6) Comparison between countries 
-7) Total population
-8) Malnutrition
+1) Dashboard(Chandralekha-5:30)
+2) Data visualization (Chandralekha-5:30)
+3) ML Model for Demand(Optional)
+4) Maps Integration(Arya-5:45)
+5) Egg Availability calculation(Nityam-5:30)
+6) Comparison between countries (Ayesha)
+7) Total population(Almas-resources )(Nityam,Gaurav-5:30)
+8) Malnutrition(Almas-resources)()
 9) Anaemia(if possible)
+10) Metric tonne conversion per country(Almas-resources)(Vivek-5:30)
+11) Producer price(Almas-resources)(Almas )
+12) Nav Bar(Vivek-5:30/Arya/Ayesha)
+13) Protein Consumption(Nityam/Gaurav-5:45)
