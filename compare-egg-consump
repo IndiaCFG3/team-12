@@ -1,0 +1,25 @@
+values= data.Entity
+v=sorted(set(values))
+def compare(country1,country2):
+    if(country1 not in v):
+      print("Country1 not found")
+      return
+    if(country2 not in v):
+      print("Country2 not found")
+      return
+    v1= v.index(country1)
+    v2 =v.index(country2)
+    i=v1
+    afg = country_data[i]
+    print(v[i])
+    x = afg[1]['Year']
+    y = afg[1]['Egg supply per person (kilograms per year)']
+    plt.plot(x,y)
+    i=v2
+    afg = country_data[i]
+    print(v[i])
+    x = afg[1]['Year']
+    y = afg[1]['Egg supply per person (kilograms per year)']
+    plt.plot(x,y)
+    plt.show()
+compare("Afghanistan","India")
