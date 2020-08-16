@@ -1,0 +1,6 @@
+1) Dashboard
+2) Data visualization 
+3) ML Model for Demand
+4) Maps Integration
+5) Egg Availability calculation
+6) Comparison between countries 
