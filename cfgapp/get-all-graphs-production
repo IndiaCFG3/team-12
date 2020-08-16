@@ -1,0 +1,28 @@
+import pandas as pd
+import numpy as np
+from matplotlib import pyplot as plt
+from keras.models import Sequential
+from sklearn.model_selection import train_test_split
+from keras.layers import Dense, Activation, LSTM, Dropout
+%matplotlib inline
+
+data = pd.read_csv("egg-production-thousand-tonnes.csv")
+data = data.drop(columns = ['Code'])
+data.columns
+
+countries = pd.get_dummies(data['Entity']).columns
+values= data.Entity
+v=sorted(set(values))
+country_data = []
+for country in countries:
+    df = data[data['Entity'] == country].drop(columns = ['Entity'])
+    country_data.append([country, df])
+
+for i in range(len(country_data)): 
+    afg = country_data[i]
+    print(v[i])
+    x = afg[1]['Year']
+    y = afg[1]['Livestock Primary - Eggs Primary - 1783 - Production - 5510 - tonnes (tonnes)']
+    plt.plot(x,y)
+    plt.show()
+
