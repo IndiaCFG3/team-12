@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ id }}</title>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+</head>
+<body>
+    <div id="container" style="width:100%; height:400px;"></div>
+
+    <div id="container1" style="width:100%; height:400px;"></div>
+
+</body>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var myChart = Highcharts.chart('container', {
+            chart: {
+                type: 'bar'
+            },
+            title: {
+                text: 'Egg Statistics '
+            },
+            xAxis: {
+                categories: ['consumption', 'shell production', 'demand']
+            },
+            yAxis: {
+                title: {
+                    text: 'units'
+                }
+            },
+            series: [{
+                name: 'afganistan',
+                data: [1, 0, 4]
+            }, {
+                name: 'india',
+                data: [5, 7, 3]
+            }]
+        });
+    });
+
+    var chart1; // globally available
+    document.addEventListener('DOMContentLoaded', function() {
+        chart1 = Highcharts.stockChart('container', {
+            rangeSelector: {
+                selected: 1
+            },
+            series: [{
+                name: 'USD to EUR',
+                data: usdtoeur // predefined JavaScript array
+           }]
+       });  
+    });
+
+
+
+    var colors = Highcharts.getOptions().colors,
+    categories = [
+        'India',
+        'Afganistan',
+        'Usa',
+        'Saudia Arabia',
+        'Sri lanka',
+        'malayasia',
+        'Other'
+    ],
+    data = [
+        {
+            y: 62.74,
+            color: colors[2],
+            drilldown: {
+                name: 'india',
+                             categories: [
+                    'india '
+                ],
+                data: [
+                    0.1
+                ]
+            }
+        },
+        {
+            y: 10.57,
+            color: colors[1],
+            drilldown: {
+                name: 'Afganistan',
+                categories: [
+                    'Afganistan'
+                ],
+                data: [
+                    1.02
+                ]
+            }
+        },
+        {
+            y: 7.23,
+            color: colors[0],
+            drilldown: {
+                name: 'USA',
+                categories: [
+                    'USA'
+                ],
+                data: [
+                    6.2
+                ]
+            }
+        },
+        {
+            y: 5.58,
+            color: colors[3],
+            drilldown: {
+                name: 'Saudi Arabia',
+                categories: [
+                    'Saudi Arabia'
+                ],
+                data: [
+                    3.39
+                ]
+            }
+        },
+        {
+            y: 4.02,
+            color: colors[5],
+            drilldown: {
+                name: 'Edge',
+                categories: [
+                    'Edge v16'
+                ],
+                data: [
+                    2.6
+                ]
+            }
+        },
+        {
+            y: 1.92,
+            color: colors[4],
+            drilldown: {
+                name: 'Opera',
+                categories: [
+                    'Opera v50.0',
+                    'Opera v49.0',
+                    'Opera v12.1'
+                ],
+                data: [
+                    0.96,
+                    0.82,
+                    0.14
+                ]
+            }
+        },
+        {
+            y: 7.62,
+            color: colors[6],
+            drilldown: {
+                name: 'Other',
+                categories: [
+                    'Other'
+                ],
+                data: [
+                    7.62
+                ]
+            }
+        }
+    ],
+    browserData = [],
+    versionsData = [],
+    i,
+    j,
+    dataLen = data.length,
+    drillDataLen,
+    brightness;
+
+
+// Build the data arrays
+for (i = 0; i < dataLen; i += 1) {
+
+    // add browser data
+    browserData.push({
+        name: categories[i],
+        y: data[i].y,
+        color: data[i].color
+    });
+
+    // add version data
+    drillDataLen = data[i].drilldown.data.length;
+    for (j = 0; j < drillDataLen; j += 1) {
+        brightness = 0.2 - (j / drillDataLen) / 5;
+        versionsData.push({
+            name: data[i].drilldown.categories[j],
+            y: data[i].drilldown.data[j],
+            color: Highcharts.color(data[i].color).brighten(brightness).get()
+        });
+    }
+}
+
+// Create the chart
+Highcharts.chart('container1', {
+    chart: {
+        type: 'pie'
+    },
+    title: {
+        text: 'Egg production share'
+    },
+    subtitle: {
+        text: 'Source: <a href="" target="_blank">statcounter.com</a>'
+    },
+    plotOptions: {
+        pie: {
+            shadow: false,
+            center: ['50%', '50%']
+        }
+    },
+    tooltip: {
+        valueSuffix: '%'
+    },
+    series: [{
+        name: 'Browsers',
+        data: browserData,
+        size: '60%',
+        dataLabels: {
+            formatter: function () {
+                return this.y > 5 ? this.point.name : null;
+            },
+            color: '#ffffff',
+            distance: -30
+        }
+    }, {
+        name: 'Versions',
+        data: versionsData,
+        size: '80%',
+        innerSize: '60%',
+        dataLabels: {
+            formatter: function () {
+                // display only if larger than 1
+                return this.y > 1 ? '<b>' + this.point.name + ':</b> ' +
+                    this.y + '%' : null;
+            }
+        },
+        id: 'versions'
+    }],
+    responsive: {
+        rules: [{
+            condition: {
+                maxWidth: 400
+            },
+            chartOptions: {
+                series: [{
+                }, {
+                    id: 'versions',
+                    dataLabels: {
+                        enabled: false
+                    }
+                }]
+            }
+        }]
+    }
+});
+    </script>
+</html>
