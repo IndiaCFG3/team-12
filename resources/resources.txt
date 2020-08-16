@@ -1,3 +1,4 @@
 https://ourworldindata.org/grapher/per-capita-egg-consumption-kilograms-per-year?year=1967
 https://ourworldindata.org/food-supply#protein-supply
 https://en.wikipedia.org/wiki/List_of_countries_by_GNI_(nominal)_per_capita
+https://keras.io/api/optimizers/
