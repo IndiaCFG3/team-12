@@ -4,3 +4,4 @@
 4) Maps Integration
 5) Egg Availability calculation
 6) Comparison between countries 
+7) Total population
