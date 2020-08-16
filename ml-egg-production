@@ -1,0 +1,63 @@
+import pandas as pd
+
+import numpy as np
+from matplotlib import pyplot as plt
+from keras.models import Sequential
+from sklearn.model_selection import train_test_split
+from keras.layers import Dense, Activation, LSTM, Dropout
+%matplotlib inline
+values= data.Entity
+v=sorted(set(values))
+data = pd.read_csv("egg-production-thousand-tonnes.csv")
+data = data.drop(columns = ['Code'])
+data.columns
+egg
+countries = pd.get_dummies(data['Entity']).columns
+
+country_data = []
+for country in countries:
+    df = data[data['Entity'] == country].drop(columns = ['Entity'])
+    country_data.append([country, df])
+
+for i in range(len(country_data)): 
+    afg = country_data[i]
+    x = afg[1]['Year']
+    y = afg[1]['Livestock Primary - Eggs Primary - 1783 - Production - 5510 - tonnes (tonnes)']
+    #plt.plot(x,y)
+    #plt.show()
+    print(v[i])
+    X_train, y_train = [], []
+    country = country_data[i]
+    country_len = len(country[1])
+    x = list(country[1]['Year'])
+    y = list(country[1]['Livestock Primary - Eggs Primary - 1783 - Production - 5510 - tonnes (tonnes)'])
+
+    for i in range(10, country_len):
+        X_train.append(y[i-10:i])
+        y_train.append(y[i])
+        
+    X_train, y_train = np.array(X_train), np.array(y_train)
+    X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1], 1))
+
+
+    model = Sequential()
+    model.add(LSTM(units=100, return_sequences=True, input_shape= (X_train.shape[1], 1)))
+    model.add(LSTM(units=100, return_sequences=True))
+    model.add(LSTM(units=100, return_sequences=True))
+    model.add(LSTM(units=100))
+    model.add(Dense(units=1))
+
+    model.compile(loss='mean_squared_error', optimizer='adam')
+
+    model.fit(X_train, y_train, epochs = 50, batch_size = 128)
+
+    values = np.asarray(y)
+
+
+    for i in range(20):
+        values, output = predict_data(model, values)
+
+    plt.plot(values, color = 'red')
+    plt.plot(y, color = 'blue')
+
+    plt.show()
