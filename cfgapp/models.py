@@ -34,25 +34,25 @@ class Country(db.Model):
 
 db.create_all()
 
-AF=Country('Afghanistan','AF')
-AU=Country('Australia','AU')
-BE=Country('Belgium','BE')
-BH=Country('Bhutan','BH')
-BR=Country('Brazil','BR')
-CA=Country('Canada','CA')
-CN=Country('China','CN')
-DE=Country('Germany','DE')
-FR=Country('France','FR')
-IT=Country('Italy','IT')
-JP=Country('Japan','JP')
-MX=Country('Mexico','MX')
-MY=Country('Malaysia','MY')
+AF=Country('Afghanistan','AFG')
+AU=Country('Australia','AUS')
+BE=Country('Belgium','BEL')
+BH=Country('Bhutan','BHA')
+BR=Country('Brazil','BRA')
+CA=Country('Canada','CAN')
+CN=Country('China','CHN')
+DE=Country('Germany','DEU')
+FR=Country('France','FRA')
+IT=Country('Italy','ITA')
+JP=Country('Japan','JPN')
+MX=Country('Mexico','MEX')
+MY=Country('Malaysia','MYS')
 NZ=Country('New Zealand','NZ')
-PT=Country('Portugal','PT')
-ES=Country('Spain','ES')
-US=Country('United States of America','US')
-PK=Country('Pakistan','PK')
-SY=Country('Syria','SY')
+PT=Country('Portugal','PRT')
+ES=Country('Spain','ESP')
+US=Country('United States of America','USA')
+PK=Country('Pakistan','PAK')
+SY=Country('Syria','SYR')
 
 db.session.add_all([AF,AU,BE,BH,BR,CA,CN,DE,FR,IT,JP,MX,MY,NZ,PT,ES,US,PK,SY])
 db.session.commit()
@@ -60,27 +60,6 @@ db.session.commit()
 @app.route('/')
 def main():
     return render_template('main.html')
-
-@app.route('/supplyMap')
-def supplyMap():
-    return render_template('supplyMap.html')
-
-@app.route('/demandMap')
-def demandMap():
-    return render_template('demandMap.html')
-
-@app.route('/supply/<var>',methods=['GET','POST'])
-def supply(var):
-    user=Country.query.filter_by(var=Country.country_code).first()
-    id1=user.id
-    plotgraph(id1)
-    return render_template('supply.html',id=var)
-
-
-@app.route('/demand/<var>')
-def demand(var):
-    return render_template('demand.html',id=var)
-
 
 def plotgraph(id):
     eggs = pd.read_csv("eggs.csv")
@@ -94,12 +73,84 @@ def plotgraph(id):
         df = eggs[eggs['Entity'] == country].drop(columns = ['Entity'])
         country_data.append([country, df])
     
-    
+
     afg = country_data[id]
     x = afg[1]['Year']
     y = afg[1]['Egg supply per person (kilograms per year)']
     plt.plot(x,y)
-    plt.show()
+    plt.savefig('new_plot.png')
+
+def plotgraph2(id):
+    data = pd.read_csv("egg-production-thousand-tonnes.csv")
+    data = data.drop(columns = ['Code'])
+    data.columns
+
+    countries = pd.get_dummies(data['Entity']).columns
+    values= data.Entity
+    v=sorted(set(values))
+    country_data = []
+    for country in countries:
+        df = data[data['Entity'] == country].drop(columns = ['Entity'])
+        country_data.append([country, df])
+
+    afg = country_data[id]
+    print(v[id])
+    x = afg[1]['Year']
+    y = afg[1]['Livestock Primary - Eggs Primary - 1783 - Production - 5510 - tonnes (tonnes)']
+    plt.plot(x,y)
+    plt.savefig('new_plot1.png')
+
+################################################
+
+@app.route('/supplyMap')
+def supplyMap():
+    return render_template('supplyMap.html')
+
+
+@app.route('/display')
+def display():
+    return render_template('display.html')
+
+@app.route('/display1')
+def display1():
+    return render_template('display1.html')
+
+@app.route('/demandMap')
+def demandMap():
+    return render_template('demandMap.html')
+
+@app.route('/supply/<code>',methods=['GET','POST'])
+def supply(code):
+    try:
+        user=Country.query.filter_by(country_code=code).first()
+        id=user.id
+        plotgraph2(id)
+        return redirect(url_for('display1'))
+    except:
+        pass
+    
+    return render_template('supply.html',supply=user.country_code)
+
+
+@app.route('/demand/<code>')
+def demand(code):
+    try:
+        user=Country.query.filter_by(country_code=code).first()
+        id=user.id
+        plotgraph(id)
+        return redirect(url_for('display'))
+    except:
+        pass
+    
+    return render_template('demand.html',supply=user.country_code)
+
+@app.route('/compare')
+def compare():
+    return render_template('compare.html')
+
+@app.route('/compareGraphs')
+def compareGraphs():
+    return render_template('compareGraphs.html')
 
 
 if __name__=="__main__":
