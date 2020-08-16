@@ -1,0 +1,68 @@
+import pandas as pd
+import numpy as np
+from matplotlib import pyplot as plt
+from keras.models import Sequential
+from sklearn.model_selection import train_test_split
+from keras.layers import Dense, Activation, LSTM, Dropout
+%matplotlib inline
+
+def predict_data(model, vals):
+    val = vals
+    X_test = np.asarray(vals[10:])
+    X_test = np.reshape(X_test, (1, X_test.shape[0], 1))
+    output = model.predict(X_test)
+    val = np.append(val, output[0][0])
+    return val, output
+
+data = pd.read_csv("per-capita-egg-consumption-kilograms-per-year.csv")
+data = data.drop(columns = ['Code'])
+data.columns
+
+countries = pd.get_dummies(data['Entity']).columns
+
+country_data = []
+for country in countries:
+    df = data[data['Entity'] == country].drop(columns = ['Entity'])
+    country_data.append([country, df])
+
+for i in range(len(country_data)): 
+    afg = country_data[i]
+    x = afg[1]['Year']
+    y = afg[1]['Egg supply per person (kilograms per year)']
+    #plt.plot(x,y)
+    #plt.show()
+    X_train, y_train = [], []
+    country = country_data[i]
+    country_len = len(country[1])
+    x = list(country[1]['Year'])
+    y = list(country[1]['Egg supply per person (kilograms per year)'])
+
+    for i in range(10, country_len):
+        X_train.append(y[i-10:i])
+        y_train.append(y[i])
+        
+    X_train, y_train = np.array(X_train), np.array(y_train)
+    X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1], 1))
+
+
+    model = Sequential()
+    model.add(LSTM(units=100, return_sequences=True, input_shape= (X_train.shape[1], 1)))
+    model.add(LSTM(units=100, return_sequences=True))
+    model.add(LSTM(units=100, return_sequences=True))
+    model.add(LSTM(units=100))
+    model.add(Dense(units=1))
+
+    model.compile(loss='mean_squared_error', optimizer='adam')
+
+    model.fit(X_train, y_train, epochs = 50, batch_size = 128)
+
+    values = np.asarray(y)
+
+
+    for i in range(20):
+        values, output = predict_data(model, values)
+
+    plt.plot(values, color = 'red')
+    plt.plot(y, color = 'blue')
+
+    plt.show()
